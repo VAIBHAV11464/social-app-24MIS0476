@@ -1,0 +1,10 @@
+{
+  "name": "social-app-v1",
+  "version": "1.0.0",
+  "description": "Social App v1 (Add Post) - Agile Project 2 - 24MIS0476",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "license": "MIT"
+}
