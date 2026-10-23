@@ -12,7 +12,7 @@ pipeline {
 
     parameters {
         choice(name: 'APP_VERSION', choices: ['all', 'v1', 'v2', 'v3'], description: 'Which version to build and deploy')
-        string(name: 'DOCKERHUB_USER', defaultValue: 'your-dockerhub-username', description: 'Your DockerHub username')
+        string(name: 'DOCKERHUB_USER', defaultValue: 'aniketdevops1', description: 'Your DockerHub username')
     }
 
     environment {
