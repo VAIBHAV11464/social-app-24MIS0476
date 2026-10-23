@@ -1,0 +1,10 @@
+{
+  "name": "social-app-v3",
+  "version": "3.0.0",
+  "description": "Social App v3 (Add Post, Like, Comment) - Agile Project 2 - 24MIS0476",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "license": "MIT"
+}
