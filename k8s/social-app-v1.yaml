@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: social-app
-          image: DOCKERHUB_USERNAME/social-app:v1
+          image: aniketdevops1/social-app:v1
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
