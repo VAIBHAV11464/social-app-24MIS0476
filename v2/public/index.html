@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Social App v2</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Segoe UI", Arial, sans-serif; background: #eef1f6; color: #1d2433; }
+  header { background: #16a34a; color: #fff; padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; }
+  header h1 { margin: 0; font-size: 22px; }
+  .badge { background: rgba(255,255,255,.2); padding: 4px 12px; border-radius: 20px; font-weight: 600; font-size: 14px; }
+  main { max-width: 620px; margin: 24px auto; padding: 0 16px; }
+  .card { background: #fff; border-radius: 10px; padding: 16px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+  input, textarea { width: 100%; padding: 10px; border: 1px solid #ccd3df; border-radius: 6px; font: inherit; margin-bottom: 8px; }
+  textarea { resize: vertical; min-height: 70px; }
+  button { background: #16a34a; color: #fff; border: 0; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+  button.ghost { background: #eef1f6; color: #1d2433; }
+  .meta { font-size: 13px; color: #6b7487; margin-bottom: 6px; }
+  .text { font-size: 16px; margin: 6px 0 12px; white-space: pre-wrap; }
+  .actions { display: flex; gap: 8px; align-items: center; }
+  .comments { margin-top: 12px; border-top: 1px solid #eef1f6; padding-top: 10px; }
+  .comment { font-size: 14px; padding: 6px 0; }
+  .comment b { margin-right: 6px; }
+  .row { display: flex; gap: 8px; }
+  .row input { margin: 0; }
+  .features { font-size: 13px; color: #6b7487; text-align: center; }
+  .empty { text-align: center; color: #6b7487; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Social App</h1>
+  <span class="badge">v2</span>
+</header>
+<main>
+  <p class="features">Features in this version: Add Post, Like &middot; Reg No: 24MIS0476</p>
+
+  <div class="card">
+    <input id="author" placeholder="Your name">
+    <textarea id="text" placeholder="What's on your mind?"></textarea>
+    <button onclick="addPost()">Add Post</button>
+  </div>
+
+  <div id="feed"></div>
+</main>
+
+<script>
+async function api(url, method = "GET", body) {
+  const res = await fetch(url, {
+    method,
+    headers: { "Content-Type": "application/json" },
+    body: body ? JSON.stringify(body) : undefined
+  });
+  return res.json();
+}
+
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
+async function addPost() {
+  const author = document.getElementById("author").value;
+  const text = document.getElementById("text").value;
+  if (!text.trim()) return alert("Write something first");
+  await api("/api/posts", "POST", { author, text });
+  document.getElementById("text").value = "";
+  load();
+}
+
+async function likePost(id) {
+  await api("/api/posts/" + id + "/like", "POST");
+  load();
+}
+
+async function load() {
+  const posts = await api("/api/posts");
+  const feed = document.getElementById("feed");
+  if (!posts.length) {
+    feed.innerHTML = '<p class="empty">No posts yet. Be the first to post!</p>';
+    return;
+  }
+  feed.innerHTML = posts.map(p => `
+    <div class="card">
+      <div class="meta"><b>${esc(p.author)}</b> &middot; ${new Date(p.createdAt).toLocaleString()}</div>
+      <div class="text">${esc(p.text)}</div>
+      <div class="actions">
+        <button class="ghost" onclick="likePost(${p.id})">&#128077; Like (${p.likes})</button>
+      </div>
+    </div>`).join("");
+}
+
+load();
+</script>
+</body>
+</html>
